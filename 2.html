@@ -1,0 +1,1182 @@
+
+
+<!DOCTYPE html>
+<html lang="ka">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ad Component — სატესტო გვერდი</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=BPG+Arial&family=Noto+Sans+Georgian:wght@300;400;600;700&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --header-h: 64px;
+    --blue: #1e40af;
+    --blue-dark: #1e3a8a;
+    --sidebar-w: 300px;
+    --gap: 28px;
+  }
+
+  body {
+    font-family: 'Noto Sans Georgian', sans-serif;
+    background: #f1f5f9;
+    color: #1e293b;
+    padding-top: var(--header-h);
+  }
+
+  /* ── HEADER ─────────────────────────────── */
+  #site-header {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    height: var(--header-h);
+    background: var(--blue);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 24px;
+    z-index: 9000;
+    box-shadow: 0 2px 12px rgba(0,0,0,.3);
+  }
+  #site-header .logo {
+    font-size: 1.3rem;
+    font-weight: 700;
+    color: #fff;
+    letter-spacing: .5px;
+  }
+  #site-header nav a {
+    color: #bfdbfe;
+    text-decoration: none;
+    margin-left: 20px;
+    font-size: .9rem;
+    transition: color .2s;
+  }
+  #site-header nav a:hover { color: #fff; }
+
+  /* ── RESET BTN ──────────────────────────── */
+  #reset-btn {
+    position: fixed;
+    top: calc(var(--header-h) + 10px);
+    left: 12px;
+    z-index: 99999;
+    background: #ef4444;
+    color: #fff;
+    border: none;
+    border-radius: 6px;
+    padding: 7px 14px;
+    font-size: .78rem;
+    font-weight: 700;
+    cursor: pointer;
+    box-shadow: 0 2px 8px rgba(0,0,0,.25);
+    transition: background .2s, transform .1s;
+    font-family: inherit;
+  }
+  #reset-btn:hover  { background: #b91c1c; }
+  #reset-btn:active { transform: scale(.96); }
+
+  /* ── LAYOUT ─────────────────────────────── */
+  #page-wrap {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 24px 16px;
+    display: grid;
+    grid-template-columns: 1fr var(--sidebar-w);
+    gap: var(--gap);
+  }
+  @media (max-width: 1280px) {
+    #page-wrap {
+      grid-template-columns: 1fr;
+    }
+    #sidebar { display: none; }
+  }
+
+  /* ── ARTICLE ────────────────────────────── */
+  #article {
+    background: #fff;
+    border-radius: 10px;
+    padding: 32px 36px;
+    box-shadow: 0 1px 4px rgba(0,0,0,.08);
+  }
+  #article h1 { font-size: 1.9rem; font-weight: 700; margin-bottom: 16px; color: #0f172a; }
+  #article h2 { font-size: 1.3rem; font-weight: 600; margin: 28px 0 10px; color: #1e40af; }
+  #article p  { font-size: 1rem; line-height: 1.75; color: #334155; margin-bottom: 14px; }
+
+  /* ── SIDEBAR ────────────────────────────── */
+  #sidebar {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    align-self: start;
+    position: sticky;
+    top: calc(var(--header-h) + 16px);
+  }
+  .sidebar-block {
+    border-radius: 10px;
+    padding: 20px 18px;
+    color: #fff;
+    font-weight: 600;
+    font-size: .9rem;
+    box-shadow: 0 2px 8px rgba(0,0,0,.15);
+    min-height: 80px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+  }
+
+  /* ── FOOTER ─────────────────────────────── */
+  #footer {
+    background: #1e293b;
+    height: 120px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #94a3b8;
+    font-size: .9rem;
+    letter-spacing: .3px;
+    margin-top: 40px;
+  }
+
+  /* ── STATIC AD MOCK BLOCKS ──────────────── */
+  .mock-ad-block {
+    width: 100%;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: .95rem;
+    letter-spacing: .4px;
+    color: #fff;
+    box-shadow: 0 2px 8px rgba(0,0,0,.15);
+  }
+  .mock-leaderboard    { height: 70px;  background: #f59e0b; }
+  .mock-article-top    { height: 90px;  background: #3b82f6; }
+  .mock-article-bottom { height: 90px;  background: #10b981; }
+  .mock-sidebar-ad     { height: 120px; background: #8b5cf6; }
+
+  /* ── STICKY MOCK CONTENT ────────────────── */
+  .sticky-mock-inner {
+    width: 100%;
+    height: 130px;
+    background: linear-gradient(135deg, #7c3aed, #a855f7);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: #fff;
+    letter-spacing: .5px;
+    text-shadow: 0 1px 4px rgba(0,0,0,.3);
+    border-radius: 8px 8px 0 0;
+  }
+
+  /* divider */
+  .ad-label {
+    font-size: .7rem;
+    font-weight: 600;
+    color: #94a3b8;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    text-align: center;
+    padding: 4px 0 2px;
+  }
+</style>
+</head>
+<body>
+
+<!-- ═══════════════ HEADER ═══════════════ -->
+<header id="site-header">
+  <div class="logo">📰 TestSite.ge</div>
+  <nav>
+    <a href="#">მთავარი</a>
+    <a href="#">სტატიები</a>
+    <a href="#">ვიდეო</a>
+    <a href="#">კონტაქტი</a>
+  </nav>
+</header>
+
+<!-- ═══════════════ RESET BUTTON ════════════ -->
+<button id="reset-btn" onclick="
+  localStorage.removeItem('p_last_time');
+  sessionStorage.removeItem('sticky-last-banner-wrapper-desktop');
+  sessionStorage.removeItem('sticky-last-banner-wrapper-mobile');
+  alert('✅ Preloader & Sticky განულებულია! გვერდი განახლდება...');
+  location.reload();
+">🔄 Reset</button>
+
+<!-- ═══════════════ PAGE LAYOUT ═══════════════ -->
+<div id="page-wrap">
+
+  <!-- ── MAIN ARTICLE ── -->
+  <main id="article">
+    <h1>სარეკლამო კომპონენტის სრული სატესტო გვერდი</h1>
+
+    <!-- LEADERBOARD (mobile-only — rendered by component below, just label here) -->
+    <p class="ad-label">↓ LEADERBOARD AD (Mobile)</p>
+    <div class="mobile-only">
+      <div class="ad ad-leaderboard mobile" data-banner-wrapper>
+        <div class="mock-ad-block mock-leaderboard">🟡 LEADERBOARD — 728×90 (Mobile Only)</div>
+      </div>
+    </div>
+
+    <!-- ARTICLE TOP (Desktop) -->
+    <p class="ad-label">↓ ARTICLE TOP AD (Desktop)</p>
+    <div class="desktop-only">
+      <div class="ad ad-article-top" data-banner-wrapper>
+        <div class="mock-ad-block mock-article-top" style="height:90px">🔵 ARTICLE TOP — Desktop 970×90</div>
+      </div>
+    </div>
+
+    <!-- ARTICLE TOP (Mobile) -->
+    <div class="mobile-only">
+      <div class="ad ad-article-top" data-banner-wrapper>
+        <div class="mock-ad-block mock-article-top" style="height:70px">🔵 ARTICLE TOP — Mobile 320×50</div>
+      </div>
+    </div>
+
+    <h2>შესავალი</h2>
+    <p>ეს გვერდი შექმნილია სარეკლამო კომპონენტის ყველა ფუნქციის — პრელოადერის, სტიკის, სტატიკური ბანერების — სატესტოდ. სქროლ ქვემოთ, რომ ყველა ქცევა გამოსცადო.</p>
+    <p>Sticky ბანერი გამოჩნდება 3 წამის შემდეგ ან 100px სქროლის შემდეგ. პრელოადერი ერთხელ გამოჩნდება — 45 წამის კულდაუნი აქვს. გამოიყენე ზედა მარცხენა <strong>Reset</strong> ღილაკი გასახელდებლად.</p>
+
+    <h2>სარეკლამო ფორმატები</h2>
+    <p>კომპონენტი მხარს უჭერს: <strong>Leaderboard</strong> (მობაილი), <strong>Article Top / Bottom</strong> (ცალ-ცალკე desktop/mobile), <strong>Sidebar</strong>, <strong>Sticky Desktop/Mobile</strong> და <strong>Preloader</strong> (fullscreen). თითოეული ფორმატი ინდივიდუალურად ჩართ/გამოვრთ შეიძლება status ველით.</p>
+
+    <h2>Sticky ანიმაციები</h2>
+    <p>Sticky ბანერს ფლიკი (flick-up / flick-down) აქვს — სწრაფი scroll ან swipe-ით ის მომენტალურად ამაღლდება ან ჩამოიწევა. ბანერი ავტომატურად ქრება footer-ის ზონაში და ბრუნდება კვლავ, როცა footer-ი ეკრანიდან ქრება.</p>
+    <p>Close ღილაკი SVG-ს animates shrink-ს ამოქმედებს, შემდეგ banner fade-out ხდება banner-melt სიჩქარით.</p>
+
+    <h2>Preloader</h2>
+    <p>Preloader მხოლოდ მობაილზე (≤1280px) ჩნდება. SVG timer ავტომატურად ხურავს 5 წამში. პირველ ვიზიტზე ყოველთვის ჩანს. შემდეგ ვიზიტებზე 30%-ის ალბათობით გამოდის (45 წამის შემდეგ).</p>
+
+    <h2>Cleanup Logic</h2>
+    <p>17 წამის შემდეგ სკრიპტი ამოწმებს ყველა [data-banner-wrapper] ელემენტს. თუ ცარიელია (img ჩატვირთვა ვერ მოხდა, iframe/video/ins არ არის), ავტომატურად შლის DOM-იდან — third-party ad-ბლოკერების შემთხვევაში სახელურ ხვრელებს ტოვებს.</p>
+
+    <h2>Session Logic</h2>
+    <p>Sticky-ს ინდექსი sessionStorage-ში ინახება key sticky-last-{wrapperId}. ყოველ ახალ ვიზიტზე შემდეგი sticky გამოდის rotation-ის მიხედვით. Desktop/Mobile ცალ-ცალკე მართავს.</p>
+
+    <h2>სქროლ ტესტი — ბლოკი A</h2>
+    <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Vestibulum tortor quam, feugiat vitae, ultricies eget, tempor sit amet, ante.</p>
+    <p>Donec eu libero sit amet quam egestas semper. Aenean ultricies mi vitae est. Mauris placerat eleifend leo. Quisque sit amet est et sapien ullamcorper pharetra. Vestibulum erat wisi, condimentum sed, commodo vitae, ornare sit amet, wisi.</p>
+    <p>Aenean fermentum, elit eget tincidunt condimentum, eros ipsum rutrum orci, sagittis tempus lacus enim ac dui. Donec non enim in turpis pulvinar facilisis. Ut felis. Praesent dapibus, neque id cursus faucibus, tortor neque egestas augue.</p>
+
+    <h2>სქროლ ტესტი — ბლოკი B</h2>
+    <p>Phasellus ultrices nulla quis nibh. Quisque a lectus. Donec consectetuer ligula vulputate sem tristique cursus. Nam nulla quam, gravida non, commodo a, sodales sit amet, nisi. Pellentesque fermentum dolor. Aliquam quam lectus, facilisis auctor.</p>
+    <p>Ut feugiat. Nulla volutpat. Nunc eleifend leo vitae magna. In id erat non orci commodo lobortis. Proin neque massa, cursus ut, gravida ut, lobortis eget, lacus. Sed diam. Praesent fermentum tempor tellus. Nullam tempus.</p>
+    <p>Pellentesque auctor neque. Nulla facilisi. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos hymenaeos. Fusce eros. Sed laoreet ullamcorper nisl. Phasellus ultrices nulla quis nibh. Quisque a lectus.</p>
+
+    <h2>სქროლ ტესტი — ბლოკი C</h2>
+    <p>Sed commodo posuere pede. Mauris ut est. Ut quis purus. Sed ac odio. Sed vehicula hendrerit sem. Duis non odio. Morbi ut dui. Sed accumsan risus eget odio. In hac habitasse platea dictumst. Pellentesque non elit.</p>
+    <p>Fusce sed justo eu urna porta tincidunt. Mauris felis odio, sollicitudin sed, volutpat a, ornare ac, arcu. Morbi sollicitudin, nisi a scelerisque tincidunt, mi dolor euismod turpis, eu mollis nunc nisi at felis.</p>
+    <p>Phasellus ultrices nulla quis nibh. Quisque a lectus. Donec consectetuer ligula vulputate sem tristique cursus. Nam nulla quam, gravida non, commodo a, sodales sit amet, nisi. Pellentesque fermentum dolor. Aliquam quam lectus.</p>
+
+    <h2>სქროლ ტესტი — ბლოკი D</h2>
+    <p>Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia curae; Proin vel ante a orci tempus eleifend ut et magna. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus luctus urna sed urna ultricies.</p>
+    <p>Nam nulla quam, gravida non, commodo a, sodales sit amet, nisi. Pellentesque fermentum dolor. Aliquam quam lectus, facilisis auctor, ultrices ut, elementum vulputate, nunc.</p>
+
+    <!-- ARTICLE BOTTOM (Desktop) -->
+    <p class="ad-label">↓ ARTICLE BOTTOM AD (Desktop)</p>
+    <div class="desktop-only">
+      <div class="ad ad-article-bottom" data-banner-wrapper>
+        <div class="mock-ad-block mock-article-bottom" style="height:90px">🟢 ARTICLE BOTTOM — Desktop 970×250</div>
+      </div>
+    </div>
+
+    <!-- ARTICLE BOTTOM (Mobile) -->
+    <div class="mobile-only">
+      <div class="ad ad-article-bottom" data-banner-wrapper>
+        <div class="mock-ad-block mock-article-bottom" style="height:70px">🟢 ARTICLE BOTTOM — Mobile 320×50</div>
+      </div>
+    </div>
+
+    <h2>დასასრული</h2>
+    <p>ყველა ფუნქცია სატესტო მონაცემებით ჩართულია. Footer-ი ქვემოთ ჩანს — sticky-ს ჩამალვის ეფექტის გასატესტად სქროლ ბოლომდე.</p>
+  </main>
+
+  <!-- ── SIDEBAR ── -->
+  <aside id="sidebar">
+    <div class="sidebar-block" style="background:#3b82f6">🔵 Sidebar Block 1<br><small style="font-weight:400;font-size:.8rem">სიახლეები</small></div>
+    <div class="sidebar-block" style="background:#10b981">🟢 Sidebar Block 2<br><small style="font-weight:400;font-size:.8rem">პოპულარული</small></div>
+    <div class="sidebar-block" style="background:#f59e0b">🟡 Sidebar Block 3<br><small style="font-weight:400;font-size:.8rem">სპორტი</small></div>
+    <div class="sidebar-block" style="background:#ef4444">🔴 Sidebar Block 4<br><small style="font-weight:400;font-size:.8rem">პოლიტიკა</small></div>
+    <div class="sidebar-block" style="background:#8b5cf6">🟣 Sidebar Block 5<br><small style="font-weight:400;font-size:.8rem">კულტურა</small></div>
+
+    <!-- SIDEBAR AD -->
+    <p class="ad-label">↓ SIDEBAR AD</p>
+    <div class="ad-sidebar-wrapper">
+      <div class="ad ad-sidebar" data-banner-wrapper>
+        <div class="mock-ad-block mock-sidebar-ad" style="height:280px;flex-direction:column;gap:6px">
+          🟣 SIDEBAR AD<br>
+          <small style="font-weight:400;font-size:.78rem;opacity:.85">300×600</small>
+        </div>
+      </div>
+    </div>
+  </aside>
+
+</div><!-- /page-wrap -->
+
+<!-- ═══════════════ FOOTER ═══════════════ -->
+<footer id="footer">
+  <span>© 2025 TestSite.ge — ყველა უფლება დაცულია</span>
+</footer>
+
+
+<!-- ═══════════════════════════════════════════
+     AD COMPONENT (Blade → HTML Mock Data)
+════════════════════════════════════════════ -->
+
+
+<!-- ─── SECTION 2: PRELOADER ─── -->
+<!--
+  Mock: 1 preloader (green, 1080×2520, placehold.co)
+  Replaces: @foreach($enabledPreloaders as $i => $p)
+-->
+
+<div class="ad-preloader js-preloader"
+     id="p-view-0"
+     data-ad-id="preloader-001"
+     data-index="0"
+     role="dialog"
+     aria-modal="true"
+     aria-hidden="true"
+     tabindex="-1"
+     aria-label="Advertisement"
+     style="display:none">
+
+  <div class="ad-preloader-box">
+    <div class="ad-timer-wrap" aria-hidden="true">
+      <svg class="ad-timer-svg" viewBox="0 0 36 36">
+        <circle class="ad-timer-bg" cx="18" cy="18" r="16" fill="none"></circle>
+        <circle class="ad-timer-bar" cx="18" cy="18" r="16" fill="none"></circle>
+      </svg>
+    </div>
+
+    <!-- Mock image: 1080x2520 green placeholder -->
+    <a href="#" target="_blank" rel="nofollow sponsored noopener noreferrer">
+      <picture>
+        <img src="https://placehold.co/540x1260/22c55e/ffffff?text=PRELOADER+AD%0A1080x2520"
+             class="js-ad-image"
+             alt="Advertisement"
+             loading="eager">
+      </picture>
+    </a>
+  </div>
+</div>
+
+
+<!-- ─── SECTION 4: STICKIES ─── -->
+<!--
+  Replaces: Blade static sticky HTML
+  (JavaScript below populates .banner-content dynamically)
+-->
+
+<div id="banner-wrapper-desktop" class="sticky-banner desktop-only" data-sticky-type="desktop">
+  <div class="p-banner">
+    <button class="close-trigger" aria-label="Close">
+      <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M18 6L6 18M6 6L18 18" stroke="black" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+        <path d="M18 6L6 18M6 6L18 18" stroke="white" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+    </button>
+    <div class="banner-content"></div>
+  </div>
+</div>
+
+<div id="banner-wrapper-mobile" class="sticky-banner mobile-only" data-sticky-type="mobile">
+  <div class="p-banner">
+    <button class="close-trigger" aria-label="Close">
+      <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M18 6L6 18M6 6L18 18" stroke="black" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+        <path d="M18 6L6 18M6 6L18 18" stroke="white" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+    </button>
+    <div class="banner-content"></div>
+  </div>
+</div>
+
+
+<!-- ─── SECTION 5: CSS (ORIGINAL — UNCHANGED) ─── -->
+<style>
+
+@media (min-width: 1281px) { .mobile-only { display: none !important; } }
+@media (max-width: 1280px) { .desktop-only { display: none !important; } }
+
+.is-hidden { display: none !important; pointer-events: none !important; }
+
+/* PRELOADER */
+.ad-preloader {
+  position: fixed;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 200000;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  padding: 30px;
+  padding-top: calc(30px + env(safe-area-inset-top));
+  padding-bottom: calc(30px + env(safe-area-inset-bottom));
+  box-sizing: border-box;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  pointer-events: none;
+  isolation: isolate;
+  outline: none;
+  -webkit-transform: translateZ(0);
+}
+
+.ad-preloader.visible {
+  opacity: 1;
+  display: flex !important;
+  pointer-events: auto;
+}
+
+@media(min-width:1281px) {
+  .ad-preloader { display: none !important; }
+}
+
+.ad-preloader-box {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: #1a1a1a;
+  border-radius: 8px;
+  overflow: hidden !important;
+  isolation: isolate;
+  max-width: 100%;
+  max-height: calc(100svh - 60px);
+  flex: 0 0 auto;
+  width: auto;
+  height: auto;
+}
+
+.ad-preloader-box img,
+.ad-preloader-box video {
+  display: block;
+  width: auto;
+  height: auto;
+  max-width: 100%;
+  max-height: 100%;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  object-fit: contain;
+}
+
+.ad-preloader-box img.loaded,
+.ad-preloader-box video.loaded { opacity: 1 !important; }
+
+.ad-timer-wrap {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  left: auto;
+  width: 34px;
+  height: 34px;
+  z-index: 10;
+  background: transparent;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 0 !important;
+  transform: none;
+  transition: none;
+}
+
+.ad-timer-wrap.is-centered {
+  top: 50% !important;
+  left: 50% !important;
+  right: auto !important;
+}
+
+.ad-timer-svg { transform: rotate(-90deg); width: 30px; height: 30px; }
+.ad-timer-bg  { fill: none; stroke: #475569; stroke-width: 3; }
+
+.ad-timer-bar {
+  fill: none;
+  stroke: #fff;
+  stroke-width: 3;
+  stroke-dasharray: 101;
+  stroke-dashoffset: 101;
+  will-change: stroke-dashoffset;
+}
+
+@-webkit-keyframes fillTimer {
+  from { stroke-dashoffset: 101; }
+  to   { stroke-dashoffset: 0; }
+}
+
+@keyframes fillTimer {
+  from { stroke-dashoffset: 101; }
+  to   { stroke-dashoffset: 0; }
+}
+
+@media (max-height: 600px) {
+  .ad-timer-wrap { width: 38px; height: 38px; top: 10px; right: 10px; }
+  .ad-timer-svg  { width: 34px; height: 34px; }
+}
+
+/* STICKY CORE & POSITIONING */
+:root {
+  --x-speed: 1.5s;
+  --banner-melt: 0.8s;
+  --start-delay: 0s;
+}
+
+.sticky-banner {
+  position: fixed;
+  bottom: 0;
+  padding-bottom: env(safe-area-inset-bottom, 0);
+  left: 0;
+  width: 100%;
+  z-index: 199999;
+  pointer-events: none;
+  display: none;
+  justify-content: center;
+  touch-action: pan-y;
+  -webkit-transform: translate3d(0, 0, 0);
+  transform: translate3d(0, 0, 0);
+  opacity: 0;
+  transition: opacity 0.3s ease-out;
+}
+
+.sticky-banner.visible {
+  display: flex !important;
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.p-banner {
+  background: #1a1a1a;
+  width: 95%;
+  max-width: 1140px;
+  min-height: 44px;
+  height: auto;
+  color: #ffffff;
+  border-radius: 8px 8px 0 0 !important;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+  pointer-events: auto;
+  -webkit-backface-visibility: hidden;
+  position: relative;
+  will-change: transform;
+  -webkit-font-smoothing: antialiased;
+  overflow: hidden !important;
+  isolation: isolate !important;
+  -webkit-mask-image: -webkit-radial-gradient(white, black);
+}
+
+.banner-content {
+  width: 100%;
+  border-radius: inherit;
+  overflow: hidden !important;
+  isolation: isolate;
+}
+
+.banner-content > *,
+.banner-content a,
+.banner-content img,
+.p-banner img {
+  max-width: 100% !important;
+  object-fit: contain;
+  display: block;
+  margin: 0 auto;
+}
+
+#banner-wrapper-desktop .p-banner img {
+  max-height: 100px !important;
+}
+
+#banner-wrapper-mobile .p-banner img {
+  max-height: 150px !important;
+}
+
+.close-trigger {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  width: 44px;
+  height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  background: transparent;
+  border: none;
+  padding: 0;
+  z-index: 1001;
+}
+
+.close-trigger svg {
+  width: 36px;
+  height: 36px;
+  display: block;
+  transform: scale(1);
+  opacity: 1;
+}
+
+@media screen and (max-width: 767px) {
+  .close-trigger {
+    width: 34px;
+    height: 34px;
+    top: 4px;
+    right: 4px;
+    outline: none;
+    -webkit-tap-highlight-color: transparent;
+  }
+  .p-banner {
+    min-height: 34px !important;
+  }
+  .close-trigger svg {
+    width: 26px;
+    height: 26px;
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+.close-trigger.animate-shrink svg {
+  animation: blowShrink var(--x-speed) cubic-bezier(0.2, 0.7, 0.1, 1) forwards !important;
+}
+
+@keyframes blowShrink {
+  0%   { transform: scale(1);   opacity: 1; }
+  100% { transform: scale(0.7); opacity: 0; }
+}
+
+.sticky-banner.removing {
+  opacity: 0 !important;
+  pointer-events: none;
+  transition: opacity var(--banner-melt) ease-in-out !important;
+}
+
+.flick-up {
+  transform: translate3d(0, -65px, 0) !important;
+  transition: transform 0.2s ease-out !important;
+}
+.flick-down {
+  transform: translate3d(0, 50%, 0) !important;
+  transition: transform 0.2s ease-out !important;
+}
+
+.sticky-banner.in-footer {
+  opacity: 0;
+  transform: translateY(35px);
+  pointer-events: none;
+  transition: transform 0.3s ease-in-out, opacity 0.3s ease-in-out;
+}
+
+.sticky-banner.returning {
+  opacity: 1;
+  transform: translateY(0);
+  transition: transform 0.3s ease, opacity 0.3s ease;
+}
+
+/* STATIC ADS INSURANCE */
+.ad img, .ad iframe, .ad ins {
+  width: 100% !important;
+  max-width: 100% !important;
+  height: auto !important;
+  display: block;
+  margin: 0 auto;
+}
+
+@media (max-width: 1280px) {
+  .ad.ad-article-top,
+  .ad.ad-article-bottom,
+  .ad.ad-leaderboard,
+  .ad.ad-sidebar {
+    width: 100%;
+    margin: 0 0 20px 0;
+    overflow: hidden;
+  }
+}
+
+@media (min-width: 1281px) {
+  .ad.ad-article-top,
+  .ad.ad-article-bottom {
+    width: 100%;
+    margin: 20px 0 40px 0;
+    overflow: hidden;
+  }
+  .ad.ad-sidebar {
+    width: 100%;
+    max-width: 336px;
+    margin: 20px 0;
+    overflow: hidden;
+  }
+}
+
+.ad-preloader .ad-preloader-box img {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+}
+</style>
+
+
+<!-- ─── SECTION 6: JAVASCRIPT (ORIGINAL — UNCHANGED, Blade vars → JS literals) ─── -->
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+
+  const isIOS = /iphone|ipad|ipod/i.test(navigator.userAgent);
+
+  // --- RESET BLOCK ---
+  const resetSticky = (id) => {
+    const el = document.getElementById(id);
+    if (el) {
+      el.style.display = 'none';
+      el.classList.remove('visible', 'in-footer', 'returning', 'removing');
+      delete el.dataset.initialized;
+    }
+  };
+  resetSticky('banner-wrapper-desktop');
+  resetSticky('banner-wrapper-mobile');
+
+  const TIMING = {
+    STICKY_SHOW_DELAY:   3000,
+    PRELOADER_AUTO_CLOSE: 5000,
+    MOBILE_SAFETY_LIMIT: 10000,
+    FLICK_DURATION:       700,
+    FLICK_FAST:           500,
+    GESTURE_LOCK:         800,
+  };
+
+  const isDev = window.location.hostname === 'localhost' || window.location.hostname.includes('127.0.0.1');
+  const trackImpression = window.trackImpression || (isDev ? (t, i) => console.log(`Impression: ${t} #${i}`) : () => {});
+  const trackClick      = window.trackClick      || (isDev ? (t, i) => console.log(`Click: ${t} #${i}`)      : () => {});
+
+
+  // ═══════════════ STICKY LOGIC ═══════════════
+
+  const footer = document.getElementById('footer') || document.querySelector('footer');
+
+  const initSticky = (wrapperId, stickyData) => {
+    const bannerWrapper = document.getElementById(wrapperId);
+    if (!bannerWrapper) return;
+    if (bannerWrapper.dataset.initialized) return;
+    bannerWrapper.dataset.initialized = 'true';
+
+    const contentContainer = bannerWrapper.querySelector('.banner-content');
+    const banner    = bannerWrapper.querySelector('.p-banner');
+    const closeBtn  = bannerWrapper.querySelector('.close-trigger');
+
+    if (!contentContainer || !banner || !closeBtn || !stickyData || stickyData.length === 0) return;
+
+    let s = null;
+
+    try {
+      let idx = sessionStorage.getItem('sticky-last-' + wrapperId);
+      const lastIdx = parseInt(idx, 10);
+      idx = !isNaN(lastIdx)
+        ? (lastIdx + 1) % stickyData.length
+        : Math.floor(Math.random() * stickyData.length);
+
+      sessionStorage.setItem('sticky-last-' + wrapperId, idx);
+
+      s = stickyData[idx];
+      if (!s || (!s.code && !s.image && !s.image_mobile)) return;
+
+      const isMobile = window.innerWidth <= 1280;
+
+      if (s.code) {
+        contentContainer.innerHTML = s.code;
+      } else {
+        const img = isMobile ? (s.image_mobile || s.image) : s.image;
+        if (!img) return;
+
+        const rawLink  = isMobile ? (s.url_mobile || s.url || '#') : (s.url || '#');
+        const safeLink = /^https?:\/\//i.test(rawLink) ? rawLink : '#';
+
+        contentContainer.innerHTML = `
+          <a href="${safeLink}" target="_blank" rel="nofollow sponsored" style="display:block; width:100%;">
+            <img src="${img}" alt="Ad" style="display:block;">
+          </a>`;
+      }
+    } catch (e) {
+      console.error('Sticky content error:', e);
+      return;
+    }
+
+    let shown        = false;
+    let isClosing    = false;
+    let isMoving     = false;
+    let flickDisabled = false;
+    let gestureLocked = false;
+    let footerObserver = null;
+    let lastScrollY  = window.scrollY;
+    let activeFlickId = 0;
+
+    const pageLoadTime = Date.now();
+
+    const showNow = () => {
+      if (shown || isClosing) return;
+      shown = true;
+      window.removeEventListener('scroll', onScroll);
+      bannerWrapper.style.display = 'flex';
+      trackImpression(bannerWrapper.dataset.stickyType, s.id);
+      requestAnimationFrame(() => requestAnimationFrame(() => {
+        bannerWrapper.classList.add('visible');
+      }));
+    };
+
+    const onScroll = () => {
+      if (Date.now() - pageLoadTime < 1000) return;
+      const currentY = window.scrollY;
+      const scrollDifference = Math.abs(currentY - lastScrollY);
+      if (currentY > 100 && scrollDifference > 30) {
+        showNow();
+      }
+      lastScrollY = currentY;
+    };
+
+    window.addEventListener('scroll', onScroll, { passive: true });
+
+    const autoShowTimer = setTimeout(() => {
+      showNow();
+    }, TIMING.STICKY_SHOW_DELAY);
+
+    if (footer) {
+      footerObserver = new IntersectionObserver(entries => {
+        if (entries[0].isIntersecting) {
+          bannerWrapper.classList.add('in-footer');
+          bannerWrapper.classList.remove('returning');
+        } else {
+          bannerWrapper.classList.remove('in-footer');
+          bannerWrapper.classList.add('returning');
+          setTimeout(() => {
+            if (bannerWrapper) bannerWrapper.classList.remove('returning');
+          }, 300);
+        }
+      }, { threshold: 0.1 });
+      footerObserver.observe(footer);
+    }
+
+    const runFlick = (cls, delay) => {
+      if (isMoving || flickDisabled || isClosing || !shown) return;
+      isMoving = true;
+      banner.classList.add(cls);
+
+      if (window.innerWidth <= 1280) {
+        isMoving = false;
+        const flickId = ++activeFlickId;
+        let scrollStopTimer = null;
+
+        function forceReset() {
+          if (flickId !== activeFlickId) return;
+          clearTimeout(scrollStopTimer);
+          window.removeEventListener('scroll', onScrollTick);
+          banner.classList.remove('flick-up', 'flick-down');
+          isMoving = false;
+        }
+
+        function onScrollTick() {
+          const st = window.pageYOffset || document.documentElement.scrollTop;
+          const isFlickUp   = banner.classList.contains('flick-up');
+          const isFlickDown = banner.classList.contains('flick-down');
+
+          if ((isFlickUp && st < lastScrollTop - 50) || (isFlickDown && st > lastScrollTop + 50)) {
+            lastScrollTop = st;
+            banner.classList.remove('flick-up', 'flick-down');
+            if (isFlickUp) banner.classList.add('flick-down');
+            else           banner.classList.add('flick-up');
+            clearTimeout(scrollStopTimer);
+            scrollStopTimer = setTimeout(forceReset, 250);
+            return;
+          }
+
+          lastScrollTop = st <= 0 ? 0 : st;
+          clearTimeout(scrollStopTimer);
+          scrollStopTimer = setTimeout(forceReset, 250);
+        }
+
+        setTimeout(() => {
+          lastScrollTop = window.pageYOffset || document.documentElement.scrollTop;
+          window.addEventListener('scroll', onScrollTick, { passive: true });
+        }, 300);
+        scrollStopTimer = setTimeout(forceReset, 800);
+      } else {
+        setTimeout(() => {
+          banner.classList.remove(cls);
+          setTimeout(() => { isMoving = false; }, 100);
+        }, delay || 500);
+      }
+    };
+
+    const onWheel = e => {
+      if (bannerWrapper && bannerWrapper.contains(e.target)) return;
+      if (gestureLocked || isClosing || !shown || isMoving) return;
+      if (Math.abs(e.deltaY) > 200) {
+        gestureLocked = true;
+        runFlick(e.deltaY > 0 ? 'flick-down' : 'flick-up', TIMING.FLICK_FAST);
+        setTimeout(() => gestureLocked = false, TIMING.GESTURE_LOCK);
+      }
+    };
+
+    let touchStartY = 0, touchStartTime = 0;
+    let lastScrollTop = window.pageYOffset || document.documentElement.scrollTop;
+
+    const onTouchStart = e => {
+      touchStartY    = e.touches[0].pageY;
+      touchStartTime = performance.now();
+    };
+
+    const onTouchEnd = e => {
+      if (gestureLocked || isClosing || !shown || isMoving) return;
+      const diff     = e.changedTouches[0].pageY - touchStartY;
+      const velocity = Math.abs(diff) / (performance.now() - touchStartTime || 1);
+      if (velocity > 0.9 && Math.abs(diff) > 90) {
+        gestureLocked = true;
+        runFlick(diff < 0 ? 'flick-up' : 'flick-down');
+        setTimeout(() => gestureLocked = false, TIMING.GESTURE_LOCK);
+      }
+    };
+
+    window.addEventListener('wheel', onWheel, { passive: true });
+    if (!isIOS) {
+      window.addEventListener('touchstart', onTouchStart, { passive: true });
+      window.addEventListener('touchend',   onTouchEnd,   { passive: true });
+    }
+
+    // Close Logic
+    const closeBanner = e => {
+      if (e) e.preventDefault();
+      if (isClosing) return;
+      activeFlickId++;
+      isClosing    = true;
+      flickDisabled = true;
+      trackClick(bannerWrapper.dataset.stickyType, s.id);
+
+      window.removeEventListener('scroll', onScroll);
+      window.removeEventListener('wheel',  onWheel);
+      window.removeEventListener('touchstart', onTouchStart);
+      window.removeEventListener('touchend',   onTouchEnd);
+      clearTimeout(autoShowTimer);
+
+      if (footerObserver) {
+        footerObserver.disconnect();
+        footerObserver = null;
+      }
+
+      const rootStyles  = getComputedStyle(document.documentElement);
+      const startDelay  = (parseFloat(rootStyles.getPropertyValue('--start-delay')) || 0) * 1000;
+      const meltTime    = (parseFloat(rootStyles.getPropertyValue('--banner-melt'))  || 0.8) * 1000;
+
+      closeBtn.classList.add('animate-shrink');
+
+      setTimeout(() => {
+        if (bannerWrapper) {
+          bannerWrapper.classList.add('removing');
+          setTimeout(() => {
+            if (bannerWrapper && bannerWrapper.parentNode) bannerWrapper.remove();
+          }, meltTime + 100);
+        }
+      }, startDelay);
+    };
+
+    closeBtn.addEventListener('click', closeBanner);
+    bannerWrapper.addEventListener('cleanup-event', () => closeBanner());
+  };
+
+
+  // ═══════════════ DECISION LOGIC ═══════════════
+  /*
+   * Replaces:
+   *   @json($enabledStickiesDesktop ?? [])  →  desktopStickies (literal array)
+   *   @json($enabledStickiesMobile  ?? [])  →  mobileStickies  (literal array)
+   *
+   * Mock sticky: 130px purple block (via code property)
+   */
+
+  const stickyCodeDesktop = `<div style="
+    width:100%; height:130px;
+    background: linear-gradient(135deg,#7c3aed,#a855f7);
+    display:flex; align-items:center; justify-content:center;
+    font-size:1.05rem; font-weight:700; color:#fff;
+    letter-spacing:.5px; text-shadow:0 1px 4px rgba(0,0,0,.3);
+    font-family: sans-serif;">
+    🟣 STICKY DESKTOP — 1140×130
+  </div>`;
+
+  const stickyCodeMobile = `<div style="
+    width:100%; height:130px;
+    background: linear-gradient(135deg,#7c3aed,#a855f7);
+    display:flex; align-items:center; justify-content:center;
+    font-size:.95rem; font-weight:700; color:#fff;
+    letter-spacing:.5px; text-shadow:0 1px 4px rgba(0,0,0,.3);
+    font-family: sans-serif;">
+    🟣 STICKY MOBILE — 320×130
+  </div>`;
+
+  const desktopStickies = [
+    { id: 'sticky-desk-1', status: 1, code: stickyCodeDesktop, image: null, image_mobile: null, url: '#' }
+  ];
+
+  const mobileStickies = [
+    { id: 'sticky-mob-1', status: 1, code: stickyCodeMobile, image: null, image_mobile: null, url: '#' }
+  ];
+
+  const isDesktop = window.innerWidth >= 1281;
+
+  if (isDesktop) {
+    if (desktopStickies.length > 0) {
+      initSticky('banner-wrapper-desktop', desktopStickies);
+    }
+  } else {
+    let stickyStarted = false;
+    const startStickyMobile = () => {
+      if (stickyStarted || mobileStickies.length === 0) return;
+      stickyStarted = true;
+      clearTimeout(safetyTimer);
+      initSticky('banner-wrapper-mobile', mobileStickies);
+    };
+    let safetyTimer = setTimeout(startStickyMobile, TIMING.MOBILE_SAFETY_LIMIT);
+    window.addEventListener('preloaderClosed', startStickyMobile, { once: true });
+  }
+
+
+  // ═══════════════ PRELOADER LOGIC ═══════════════
+
+  const preloaders = [...document.querySelectorAll('.js-preloader')];
+
+  if (preloaders.length && window.matchMedia("(max-width: 1280px)").matches) {
+    const now        = Date.now();
+    const lastShown  = parseInt(localStorage.getItem('p_last_time') || '0', 10);
+    const COOLDOWN   = 45000;
+    const isFirstVisit    = lastShown === 0;
+    const cooldownPassed  = (now - lastShown >= COOLDOWN);
+
+    if (isFirstVisit || (cooldownPassed && Math.random() > 0.3)) {
+      const idx = Math.floor(Math.random() * preloaders.length);
+      const el  = preloaders[idx];
+      const box = el.querySelector('.ad-preloader-box');
+      const img = el.querySelector('.js-ad-image');
+      const tBar = el.querySelector('.ad-timer-bar');
+      const isExternal = el.querySelector('.ad-external-video-wrapper');
+
+      if (!el || !box) return;
+
+      const hideP = () => {
+        if (!el.classList.contains('visible')) return;
+        localStorage.setItem('p_last_time', Date.now().toString());
+        window.dispatchEvent(new CustomEvent('preloaderClosed'));
+        el.classList.remove('visible');
+      };
+
+      el.setAttribute('aria-hidden', 'false');
+      el.classList.add('visible');
+      el.focus();
+
+      if (tBar) {
+        tBar.style.webkitAnimation = 'none';
+        tBar.style.animation       = 'none';
+        tBar.style.strokeDashoffset = '101';
+        const duration  = TIMING.PRELOADER_AUTO_CLOSE;
+        const startTime = performance.now();
+
+        function animate(currentTime) {
+          const elapsed  = currentTime - startTime;
+          const progress = Math.min(elapsed / duration, 1);
+          tBar.style.strokeDashoffset = 101 - (progress * 101);
+          if (progress < 1) {
+            requestAnimationFrame(animate);
+          } else {
+            hideP();
+          }
+        }
+        requestAnimationFrame(animate);
+      }
+
+      if (img) {
+        img.onerror = () => { img.style.display = 'none'; };
+        img.onload  = () => { img.classList.add('loaded'); };
+        if (img.complete) img.onload();
+      }
+
+      if (isExternal) {
+        window.addEventListener('externalAdStarted', hideP, { once: true });
+      }
+
+      const realAdId = el.dataset.adId || el.id;
+      if (typeof trackImpression === 'function') trackImpression('preloader', realAdId);
+      el.querySelector('a')?.addEventListener('click', () => {
+        if (typeof trackClick === 'function') trackClick('preloader', realAdId);
+      });
+
+    } else {
+      window.dispatchEvent(new CustomEvent('preloaderClosed'));
+    }
+  } else {
+    window.dispatchEvent(new CustomEvent('preloaderClosed'));
+  }
+
+
+  // ═══════════════ BANNER CLEANUP ═══════════════
+
+  setTimeout(() => {
+    const targets = document.querySelectorAll('[data-banner-wrapper], .ad-preloader');
+
+    targets.forEach(el => {
+      const rootTags = ['BODY', 'HTML', 'HEAD', 'MAIN', 'HEADER', 'FOOTER'];
+      if (rootTags.includes(el.tagName)) return;
+
+      const cleanupIfBroken = () => {
+        const imgs = Array.from(el.querySelectorAll('img'));
+        const hasPotentialImg = imgs.some(img => {
+          const isLoadedSuccessfully = img.complete && img.naturalHeight > 2;
+          const isStillLoading       = !img.complete;
+          return isLoadedSuccessfully || isStillLoading;
+        });
+
+        const hasIframe = !!el.querySelector('iframe');
+        const hasVideo  = !!el.querySelector('video');
+        const hasIns    = !!el.querySelector('ins');
+        const hasText   = el.textContent.trim().length > 20;
+
+        if (hasPotentialImg || hasIframe || hasVideo || hasIns || hasText) return;
+
+        el.dispatchEvent(new CustomEvent('cleanup-event'));
+        if (el.parentNode) {
+          if (typeof isDev !== 'undefined' && isDev) {
+            console.warn('Ad block cleanup: empty or broken content removed.', el);
+          }
+          el.remove();
+        }
+      };
+
+      const media = el.querySelectorAll('img, iframe, video');
+
+      if (media.length > 0) {
+        let pending = media.length;
+        const checkMedia = () => {
+          pending--;
+          if (pending <= 0) cleanupIfBroken();
+        };
+        media.forEach(item => {
+          if (item.tagName === 'IMG') {
+            if (item.complete) checkMedia();
+            else {
+              item.addEventListener('load',  checkMedia, { once: true });
+              item.addEventListener('error', checkMedia, { once: true });
+            }
+          } else {
+            checkMedia();
+          }
+        });
+      } else {
+        cleanupIfBroken();
+      }
+    });
+
+  }, 17000);
+
+});
+</script>
+
+</body>
+</html>
+
