@@ -346,16 +346,17 @@
 
   <div class="ad-preloader-box">
     <div class="ad-timer-wrap" aria-hidden="true">
+      <span class="ad-timer-text" style="display:none">5</span>
+
       <svg class="ad-timer-svg" viewBox="0 0 36 36">
         <circle class="ad-timer-bg" cx="18" cy="18" r="16" fill="none"></circle>
         <circle class="ad-timer-bar" cx="18" cy="18" r="16" fill="none"></circle>
       </svg>
     </div>
 
-    <!-- Mock image: 1080x2520 green placeholder -->
     <a href="#" target="_blank" rel="nofollow sponsored noopener noreferrer">
       <picture>
-        <img src="https://placehold.co/400x600/22c55e/ffffff?text=PRELOADER+AD%0A1080x2520"
+        <img src="https://placehold.co/540x1260/22c55e/ffffff?text=PRELOADER+AD%0A1080x2520"
              class="js-ad-image"
              alt="Advertisement"
              loading="eager">
@@ -404,7 +405,9 @@
 
 .is-hidden { display: none !important; pointer-events: none !important; }
 
+
 /* PRELOADER */
+
 .ad-preloader {
   position: fixed;
   inset: 0;
@@ -472,10 +475,12 @@
   top: 10px;
   right: 10px;
   left: auto;
-  width: 34px;
-  height: 34px;
+  width: 40px;
+  height: 40px;
   z-index: 10;
   background: transparent;
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
   border-radius: 50%;
   display: flex;
   align-items: center;
@@ -491,7 +496,7 @@
   right: auto !important;
 }
 
-.ad-timer-svg { transform: rotate(-90deg); width: 30px; height: 30px; }
+.ad-timer-svg { transform: rotate(-90deg); width: 32px; height: 32px; }
 .ad-timer-bg  { fill: none; stroke: #475569; stroke-width: 3; }
 
 .ad-timer-bar {
@@ -501,6 +506,18 @@
   stroke-dasharray: 101;
   stroke-dashoffset: 101;
   will-change: stroke-dashoffset;
+}
+
+.ad-timer-text {
+    position: absolute;
+  color: #ffffff;
+  font-family: system-ui, -apple-system, sans-serif;
+  font-size: 18px;
+  font-weight: 300;
+  line-height: 1;
+  z-index: 11;
+  pointer-events: none;
+  display: none;
 }
 
 @-webkit-keyframes fillTimer {
@@ -1041,78 +1058,109 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // ═══════════════ PRELOADER LOGIC ═══════════════
 
-  const preloaders = [...document.querySelectorAll('.js-preloader')];
+ 
 
-  if (preloaders.length && window.matchMedia("(max-width: 1280px)").matches) {
-    const now        = Date.now();
-    const lastShown  = parseInt(localStorage.getItem('p_last_time') || '0', 10);
-    const COOLDOWN   = 45000;
-    const isFirstVisit    = lastShown === 0;
-    const cooldownPassed  = (now - lastShown >= COOLDOWN);
 
-    if (isFirstVisit || (cooldownPassed && Math.random() > 0.3)) {
-      const idx = Math.floor(Math.random() * preloaders.length);
-      const el  = preloaders[idx];
-      const box = el.querySelector('.ad-preloader-box');
-      const img = el.querySelector('.js-ad-image');
-      const tBar = el.querySelector('.ad-timer-bar');
-      const isExternal = el.querySelector('.ad-external-video-wrapper');
+const preloaders = [...document.querySelectorAll('.js-preloader')];
 
-      if (!el || !box) return;
+if (preloaders.length && window.matchMedia("(max-width: 1280px)").matches) {
+  const now = Date.now();
+  const lastShown = parseInt(localStorage.getItem('p_last_time') || '0', 10);
+  const COOLDOWN = 45000;
+  const isFirstVisit = lastShown === 0;
+  const cooldownPassed = (now - lastShown >= COOLDOWN);
 
-      const hideP = () => {
+  if (isFirstVisit || (cooldownPassed && Math.random() > 0.3)) {
+    const idx = Math.floor(Math.random() * preloaders.length);
+    const el = preloaders[idx];
+    const box = el.querySelector('.ad-preloader-box');
+    const img = el.querySelector('.js-ad-image');
+    
+    const tBar = el.querySelector('.ad-timer-bar');
+    const tSvg = el.querySelector('.ad-timer-svg');
+    const tText = el.querySelector('.ad-timer-text');
+
+   const isCircle = Date.now() % 2 === 0; 
+      const canUseCircle = isCircle && tSvg && tBar;
+
+    const isExternal = el.querySelector('.ad-external-video-wrapper');
+
+    if (!el || !box) return;
+
+    const hideP = () => {
+      if (!el.classList.contains('visible')) return;
+      localStorage.setItem('p_last_time', Date.now().toString());
+      window.dispatchEvent(new CustomEvent('preloaderClosed'));
+      el.classList.remove('visible');
+    };
+
+    el.setAttribute('aria-hidden', 'false');
+    el.classList.add('visible');
+    el.focus();
+
+  if (canUseCircle || tText) {
+      const wrap = el.querySelector('.ad-timer-wrap');
+
+      if (canUseCircle) {
+        tSvg.style.display = 'block';
+        if (wrap) wrap.style.background = 'transparent';
+        if (tText) tText.style.display = 'none';
+      } else if (tText) {
+        tText.style.display = 'block';
+        if (wrap) wrap.style.background = 'rgba(0, 0, 0, 0.5)';
+        if (tSvg) tSvg.style.display = 'none';
+      }
+
+      const duration = TIMING.PRELOADER_AUTO_CLOSE;
+      const startTime = performance.now();
+
+      function animate(currentTime) {
         if (!el.classList.contains('visible')) return;
-        localStorage.setItem('p_last_time', Date.now().toString());
-        window.dispatchEvent(new CustomEvent('preloaderClosed'));
-        el.classList.remove('visible');
-      };
 
-      el.setAttribute('aria-hidden', 'false');
-      el.classList.add('visible');
-      el.focus();
+        const elapsed = currentTime - startTime;
+        const progress = Math.min(elapsed / duration, 1);
 
-      if (tBar) {
-        tBar.style.webkitAnimation = 'none';
-        tBar.style.animation       = 'none';
-        tBar.style.strokeDashoffset = '101';
-        const duration  = TIMING.PRELOADER_AUTO_CLOSE;
-        const startTime = performance.now();
-
-        function animate(currentTime) {
-          const elapsed  = currentTime - startTime;
-          const progress = Math.min(elapsed / duration, 1);
+        // --- აი ეს არის ოპტიმიზებული ნაწილი ---
+        if (canUseCircle) {
           tBar.style.strokeDashoffset = 101 - (progress * 101);
-          if (progress < 1) {
-            requestAnimationFrame(animate);
-          } else {
-            hideP();
+        } else {
+          const timeLeft = Math.ceil((duration - elapsed) / 1000);
+          if (tText.textContent != timeLeft && timeLeft >= 0) {
+            tText.textContent = timeLeft;
           }
         }
-        requestAnimationFrame(animate);
+
+        if (progress < 1) {
+          requestAnimationFrame(animate);
+        } else {
+          hideP();
+        }
       }
-
-      if (img) {
-        img.onerror = () => { img.style.display = 'none'; };
-        img.onload  = () => { img.classList.add('loaded'); };
-        if (img.complete) img.onload();
-      }
-
-      if (isExternal) {
-        window.addEventListener('externalAdStarted', hideP, { once: true });
-      }
-
-      const realAdId = el.dataset.adId || el.id;
-      if (typeof trackImpression === 'function') trackImpression('preloader', realAdId);
-      el.querySelector('a')?.addEventListener('click', () => {
-        if (typeof trackClick === 'function') trackClick('preloader', realAdId);
-      });
-
-    } else {
-      window.dispatchEvent(new CustomEvent('preloaderClosed'));
+      requestAnimationFrame(animate);
     }
+
+    if (img) {
+      img.onerror = () => { img.style.display = 'none'; };
+      img.onload = () => { img.classList.add('loaded'); };
+      if (img.complete) img.onload();
+    }
+
+    if (isExternal) {
+      window.addEventListener('externalAdStarted', hideP, { once: true });
+    }
+
+    const realAdId = el.dataset.adId || el.id;
+    if (typeof trackImpression === 'function') trackImpression('preloader', realAdId);
+    el.querySelector('a')?.addEventListener('click', () => {
+      if (typeof trackClick === 'function') trackClick('preloader', realAdId);
+    });
+
   } else {
     window.dispatchEvent(new CustomEvent('preloaderClosed'));
   }
+} else {
+  window.dispatchEvent(new CustomEvent('preloaderClosed'));
+}
 
 
   // ═══════════════ BANNER CLEANUP ═══════════════
@@ -1179,5 +1227,4 @@ document.addEventListener('DOMContentLoaded', () => {
 
 </body>
 </html>
-
 
