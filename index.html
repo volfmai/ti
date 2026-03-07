@@ -1003,19 +1003,23 @@ if (isDesktop) {
 
 
 // PRELOADER LOGIC
-
+  
 
 const preloaders = [...document.querySelectorAll('.js-preloader')];
-
+  
 if (preloaders.length && window.matchMedia("(max-width: 1280px)").matches) {
-    const now = Date.now();
-    const lastShown = parseInt(localStorage.getItem('p_last_time') || '0', 10);
-    const COOLDOWN = 45000;
-    const cooldownPassed = (now - lastShown >= COOLDOWN);
+    let pageCount = parseInt(sessionStorage.getItem('p_page_count') || '0', 10);
+    let currentIdx = parseInt(localStorage.getItem('p_banner_index') || '0', 10);
 
-    if (lastShown === 0 || (cooldownPassed && Math.random() > 0.3)) {
-        const idx = Math.floor(Math.random() * preloaders.length);
-        const el = preloaders[idx];
+    pageCount++;
+    sessionStorage.setItem('p_page_count', pageCount.toString());
+
+    if (pageCount === 1 || pageCount % 2 !== 0) {
+        const el = preloaders[currentIdx];
+
+        currentIdx = (currentIdx + 1) % preloaders.length;
+        localStorage.setItem('p_banner_index', currentIdx.toString());
+
         const box = el?.querySelector('.ad-preloader-box');
 
         if (el && box) {
@@ -1030,7 +1034,6 @@ if (preloaders.length && window.matchMedia("(max-width: 1280px)").matches) {
 
             const hideP = () => {
                 if (!el.classList.contains('visible')) return;
-                try { localStorage.setItem('p_last_time', Date.now().toString()); } catch(e) {}
                 window.dispatchEvent(new CustomEvent('preloaderClosed'));
                 el.classList.remove('visible');
             };
@@ -1169,3 +1172,4 @@ setTimeout(() => {
 
 </body>
 </html>
+
